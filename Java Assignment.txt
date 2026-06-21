@@ -1,0 +1,232 @@
+                                                                     Java Assignment
+1.E-Commerce Billing Engine
+
+import java.util.*;
+
+class Item {
+    int id;
+    String name;
+    double unitPrice;
+
+    Item(int id, String name, double unitPrice) {
+        this.id = id;
+        this.name = name;
+        this.unitPrice = unitPrice;
+    }
+}
+
+class Bill {
+    int[] itemIds;
+    int[] quantities;
+    List<Item> items;
+
+    Bill(int[] itemIds, int[] quantities, List<Item> items) {
+        this.itemIds = itemIds;
+        this.quantities = quantities;
+        this.items = items;
+    }
+
+    double calculateTotal() {
+        double total = 0;
+
+        for (int i = 0; i < itemIds.length; i++) {
+            for (Item item : items) {
+                if (item.id == itemIds[i]) {
+                    total += item.unitPrice * quantities[i];
+                }
+            }
+        }
+        return total;
+    }
+}
+
+public class BillingEngine {
+    public static void main(String[] args) {
+
+        List<Item> items = new ArrayList<>();
+        items.add(new Item(1, "Laptop", 50000));
+        items.add(new Item(2, "Mouse", 500));
+        items.add(new Item(3, "Keyboard", 1000));
+
+        int[] itemIds = {1, 2};
+        int[] qty = {1, 2};
+
+        Bill bill = new Bill(itemIds, qty, items);
+
+        System.out.println("Total Bill = ₹" + bill.calculateTotal());
+    }
+} 
+
+
+
+2.Console Login + Product List Application
+import java.util.*;
+import java.util.regex.*;
+
+public class LoginProductApp {
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter Email: ");
+        String email = sc.nextLine();
+
+        System.out.print("Enter Password: ");
+        String password = sc.nextLine();
+
+        String emailPattern = "^[A-Za-z0-9+_.-]+@(.+)$";
+
+        if (!Pattern.matches(emailPattern, email)) {
+            System.out.println("Invalid Email Format");
+            return;
+        }
+
+        if (password.length() < 6) {
+            System.out.println("Password must contain at least 6 characters");
+            return;
+        }
+
+        System.out.println("Login Successful");
+
+        ArrayList<String> products = new ArrayList<>();
+        products.add("Laptop");
+        products.add("Mouse");
+        products.add("Keyboard");
+
+        System.out.println("\nProduct List:");
+        for (String product : products) {
+            System.out.println(product);
+        }
+    }
+}
+
+
+3.Employee Filter Program:
+import java.util.*;
+import java.util.stream.Collectors;
+
+class Employee {
+    int id;
+    String name;
+    double salary;
+    String department;
+
+    Employee(int id, String name, double salary, String department) {
+        this.id = id;
+        this.name = name;
+        this.salary = salary;
+        this.department = department;
+    }
+
+    public String toString() {
+        return id + " " + name + " " + salary + " " + department;
+    }
+}
+
+public class EmployeeFilter {
+    public static void main(String[] args) {
+
+        List<Employee> employees = Arrays.asList(
+                new Employee(1, "Ganesh", 35000, "IT"),
+                new Employee(2, "Arun", 25000, "HR"),
+                new Employee(3, "Kumar", 45000, "IT"),
+                new Employee(4, "Priya", 30000, "Finance"),
+                new Employee(5, "Divya", 50000, "HR"),
+                new Employee(6, "Ravi", 28000, "IT"),
+                new Employee(7, "John", 55000, "Finance"),
+                new Employee(8, "Anu", 40000, "HR"),
+                new Employee(9, "Vijay", 60000, "IT"),
+                new Employee(10, "Meena", 32000, "Finance")
+        );
+
+        System.out.println("Employees Salary > 30000");
+        employees.stream()
+                .filter(e -> e.salary > 30000)
+                .forEach(System.out::println);
+
+        System.out.println("\nGroup By Department");
+        Map<String, List<Employee>> grouped =
+                employees.stream()
+                        .collect(Collectors.groupingBy(e -> e.department));
+
+        grouped.forEach((dept, empList) -> {
+            System.out.println(dept + " : " + empList);
+        });
+
+        System.out.println("\nSorted By Name");
+        employees.stream()
+                .sorted(Comparator.comparing(e -> e.name))
+                .forEach(System.out::println);
+    }
+}
+
+4.Product CRUD API (ArrayList)
+import java.util.*;
+
+class Product {
+    int id;
+    String name;
+    double price;
+    int qty;
+
+    Product(int id, String name, double price, int qty) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.qty = qty;
+    }
+
+    public String toString() {
+        return id + " " + name + " " + price + " " + qty;
+    }
+}
+
+public class ProductCRUD {
+
+    static ArrayList<Product> products = new ArrayList<>();
+
+    public static void addProduct(Product p) {
+        products.add(p);
+        System.out.println("Product Added");
+    }
+
+    public static void listProducts() {
+        products.forEach(System.out::println);
+    }
+
+    public static void updateProduct(int id, String name, double price, int qty) {
+        for (Product p : products) {
+            if (p.id == id) {
+                p.name = name;
+                p.price = price;
+                p.qty = qty;
+                System.out.println("Product Updated");
+                return;
+            }
+        }
+    }
+
+    public static void deleteProduct(int id) {
+        products.removeIf(p -> p.id == id);
+        System.out.println("Product Deleted");
+    }
+
+    public static void main(String[] args) {
+
+        addProduct(new Product(1, "Laptop", 50000, 10));
+        addProduct(new Product(2, "Mouse", 500, 50));
+
+        System.out.println("\nGET /product/list");
+        listProducts();
+
+        System.out.println("\nPUT /product/update/1");
+        updateProduct(1, "Gaming Laptop", 70000, 5);
+
+        System.out.println("\nDELETE /product/delete/2");
+        deleteProduct(2);
+
+        System.out.println("\nFinal Product List");
+        listProducts();
+    }
+}
